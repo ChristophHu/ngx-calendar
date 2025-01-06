@@ -62,6 +62,16 @@ export class OverviewComponent {
       color: colors.blue,
       start: new Date(),
     },
+    { start: new Date("2025-01-08T08:00:00.000Z"), end: new Date("2025-01-08T13:00:00.000Z"),
+      title: "A draggable and resizable event2",
+      color: colors.blue,
+      actions: [],
+      resizable: {
+          beforeStart: true,
+          afterEnd: true
+      },
+      draggable: true
+    }
   ];
 
   refresh = new Subject<void>()

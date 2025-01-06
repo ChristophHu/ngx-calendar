@@ -464,33 +464,15 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
             console.log('top', top)
             break
           case isSameDay(event.start, startOfView) && event.end && isSameDay(event.end, startOfView):
-
-            break
-        }
-        if (isSameDay(event.start, startOfView)) {
-          let startsBeforeDay: boolean = event.start < startOfView
-          let endsAfterDay: boolean = event.end ? event.end > endOfView : false
+            let startsBeforeDay: boolean = event.start < startOfView
+            let endsAfterDay: boolean = event.end ? event.end > endOfView : false
   
-          hourColumn.events.push({ event, height: this.minimumEventHeight, width: 100, top, left: 0, startsBeforeDay, endsAfterDay })
-          hourColumn.events.push({ event: { start: new Date("2025-01-03T07:00:00.000Z"), end: new Date("2025-01-03T13:00:00.000Z"),
-                title: "A draggable and resizable event",
-                color: colors.blue,
-                actions: [],
-                resizable: {
-                    beforeStart: true,
-                    afterEnd: true
-                },
-                draggable: true
-            },
-            height: 360,
-            width: 100,
-            top: 120,
-            left: 0,
-            startsBeforeDay: false,
-            endsAfterDay: false
-        })
-        }
-        
+            top = getHours(startOfHour(event.start)) * this.hourSegments * this.hourSegmentHeight
+            height = getHours(startOfHour(event.end)) * this.hourSegments * this.hourSegmentHeight - top
+    
+            hourColumn.events.push({ event, height, width: 100, top, left: 0, startsBeforeDay, endsAfterDay })
+            break
+        }        
       })
       
       
