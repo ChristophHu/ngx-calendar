@@ -2,7 +2,7 @@
 
 ## Demo
 <p align="center" style="padding: 8px; border: 2px #2563EB solid; border-radius: 8px;">
-  <a href="https://christophhu.github.io/ngx-calendar"><img src="https://github.com/ChristophHu/ChristophHu/blob/main/assets/img/ngx-calendar.png" width="500" alt="image" /></a>
+  <a href="https://christophhu.github.io/ngx-calendar"><img src="https://github.com/ChristophHu/ChristophHu/blob/main/assets/img/ngx-calendar.png" width="500" alt="image" style="border: 4px solid grey;"/></a>
 </p>
 
 ## Description
