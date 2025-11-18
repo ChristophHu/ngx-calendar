@@ -1,0 +1,11 @@
+<div class="cal-day-headers flex ml-24 bg-primary text-dark rounded-lg" role="row">
+    <div class="cal-header flex flex-col w-full m-2 p-1 text-center text-ellipsis whitespace-nowrap overflow-hidden" *ngFor="let day of days; trackBy: trackByWeekDayHeaderDate" [class.cal-past]="day.isPast" [class.cal-today]="day.isToday" [class.cal-future]="day.isFuture" [class.cal-weekend]="day.isWeekend" tabindex="0" role="columnheader">
+        <!-- (mwlClick)="dayHeaderClicked.emit({ day: day, sourceEvent: $event.event })" -->
+        <!-- [ngClass]="day.cssClass" -->
+        <!-- mwlDroppable dragOverClass="cal-drag-over" (drop)="eventDropped.emit({ event: $event.dropData.event, newStart: day.date })" (dragEnter)="dragEnter.emit({ date: day.date })" -->
+        <b>{{ day.date | date: 'EEEE' }}</b>
+        <!-- | calendarDate : 'weekViewColumnHeader' : locale -->
+        <p>{{ day.date | date: 'MMM dd' }}</p>
+        <!-- | calendarDate : 'weekViewColumnSubHeader' : locale -->
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<calendar-week-view class="cal-day-view" [daysInWeek]="1" [viewDate]="viewDate" [events]="events"
+    [hourSegments]="hourSegments" [hourDuration]="hourDuration" [hourSegmentHeight]="hourSegmentHeight"
+    [minimumEventHeight]="minimumEventHeight" [dayStartHour]="dayStartHour" [dayStartMinute]="dayStartMinute"
+    [dayEndHour]="dayEndHour" [dayEndMinute]="dayEndMinute" [refresh]="refresh" 
+    [eventSnapSize]="eventSnapSize" [snapDraggedEvents]="snapDraggedEvents" 
+    [validateEventTimesChanged]="validateEventTimesChanged"
+    (eventClicked)="eventClicked.emit($event)" (hourSegmentClicked)="hourSegmentClicked.emit($event)"
+    (eventTimesChanged)="eventTimesChanged.emit($event)"
+    (beforeViewRender)="beforeViewRender.emit($event)">
+</calendar-week-view>

@@ -1,0 +1,10 @@
+<div class="absolute inset-0">
+    @switch (view) {
+        @case ('week') {
+            <calendar-week-view class="absolute inset-0" [viewDate]="viewDate" [events]="events" [refresh]="refresh" [validateEventTimesChanged]="validateEventTimesChanged" (eventTimesChanged)="eventTimesChanged($event)"></calendar-week-view>
+        }
+        @case ('day') {
+            <calendar-day-view [viewDate]="viewDate" [events]="events" [refresh]="refresh" [validateEventTimesChanged]="validateEventTimesChanged" (eventTimesChanged)="eventTimesChanged($event)"></calendar-day-view>
+        }
+    }
+</div>

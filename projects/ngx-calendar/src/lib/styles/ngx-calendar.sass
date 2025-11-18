@@ -1,0 +1,115 @@
+// day-view
+.cal-day-view
+    calendar-week-view-header
+        // @apply hidden
+
+// week-view
+// @reference "tailwindcss"
+
+// @utility border-borderline
+//   background-color: theme('colors.gray.300')
+
+// @utility bg-primary
+//   background-color: theme('colors.gray.100')
+    
+.cal-all-day-events
+
+  .cal-day-columns
+    // @apply absolute flex h-full w-full top-0 border-l border-borderline
+
+    .cal-time-label-column
+      // @apply flex h-full w-24 items-center justify-center
+    
+    .cal-day-column
+      // @apply flex grow border-l border-borderline
+
+  .cal-events-row
+    // @apply relative ml-24
+
+    .cal-events-container
+      // @apply relative
+
+  .cal-time-events
+    // @apply relative flex
+
+    .cal-day-columns
+      // @apply flex grow pl-24
+
+    .cal-day-column
+      // @apply relative
+
+      .cal-hour + .cal-hour-odd
+        background-color: theme('colors.primary')
+        // @apply bg-primary
+
+    .cal-time-label-column
+      // @apply flex flex-col h-full w-24 items-center justify-center font-bold
+
+      .cal-hour + .cal-hour-odd
+        background-color: theme('colors.primary')
+        // @apply bg-primary
+
+      .cal-hour 
+        .cal-hour-odd
+          display: none
+          // @apply hidden
+
+    .cal-events-container
+      // @apply relative
+
+    .cal-day-column 
+      // @apply flex flex-col flex-grow 
+
+// time-marker
+.cal-current-time-marker
+  // @apply absolute h-[2px] w-full bg-accent z-10
+    
+// week-view-event
+.cal-event
+  // @apply flex m-px px-1 items-center border rounded
+
+  .cal-event-action
+    // @apply ml-2
+
+  .cal-event-title
+    // @apply ml-2 text-dark text-sm
+
+// header
+.cal-day-headers
+  // @apply flex ml-24 bg-primary text-dark rounded-lg
+
+  .cal-header
+    // @apply flex flex-col w-full m-2 p-1 text-center text-ellipsis whitespace-nowrap overflow-hidden
+
+  .cal-past
+    // @apply bg-gray-600 rounded
+
+  .cal-today
+    background-color: red
+    border-radius: 8px
+    // @apply bg-accent rounded
+
+  .cal-future
+    // @apply bg-gray-500 rounded
+
+  .cal-weekend
+    background-color: theme('colors.borderline')
+    border-radius: theme('borderRadius.lg')
+    // @apply bg-gray-800 rounded
+
+// week-view-hour-segment
+    
+.cal-hour-segment
+  @apply block relative
+
+  &::after
+    content: '\00a0'
+
+  &:hover
+    @apply bg-secondary
+
+.cal-starts-within-day .cal-event
+  // @apply rounded-tl rounded-tr
+
+.cal-ends-within-day .cal-event
+  // @apply rounded-bl rounded-br

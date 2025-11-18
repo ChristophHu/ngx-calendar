@@ -1,0 +1,46 @@
+{
+  "name": "@christophhu/ngx-calendar",
+  "version": "20.3.0",
+  "description": "Library for Angular to present code.",
+  "license": "MIT",
+  "author": {
+    "name": "Christoph Huschenhoefer",
+    "email": "christoph@nxt.codes"
+  },
+  "keywords": [
+    "angular",
+    "calendar"
+  ],
+  "sideEffects": false,
+    "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christophhu/ngx-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/christophhu/ngx-calendar/issues"
+  },
+  "homepage": "https://github.com/christophhu/ngx-calendar#readme",
+  "peerDependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/core": "^20.3.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "lib": {
+    "entryFile": "src/public-api.ts",
+    "styleIncludePaths": [
+      "src/lib/styles"
+    ]
+  },
+  "assets": [
+    {
+      "glob": "**/*.css",
+      "input": "src/lib/styles",
+      "output": "styles"
+    }
+  ]
+}
