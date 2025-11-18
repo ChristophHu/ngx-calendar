@@ -28,13 +28,8 @@
             ],
             "styles": [
               "projects/demo/src/styles.sass",
-              "projects/demo/src/ngx-calendar.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "projects/ngx-calendar/src/lib/styles"
-              ]
-            }
+              "dist/ngx-calendar/src/lib/styles/ngx-calendar.css"
+            ]
           },
           "configurations": {
             "production": {

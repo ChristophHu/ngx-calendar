@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "prebuild": "sass projects/ngx-calendar/src/lib/styles:projects/ngx-calendar/src/lib/styles"
   },
   "prettier": {
     "printWidth": 100,

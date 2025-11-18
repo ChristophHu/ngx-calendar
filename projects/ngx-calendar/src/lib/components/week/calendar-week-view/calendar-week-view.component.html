@@ -1,6 +1,6 @@
 <div class="cal-week-view absolute inset-0 flex flex-col">
     <div class="relative fixed flex-none h-24 w-full bg-tertiary py-2 z-10">
-      <calendar-week-view-header class="" [days]="days" (dayHeaderClicked)="dayHeaderClicked.emit($event)">
+      <calendar-week-view-header [days]="days" (dayHeaderClicked)="dayHeaderClicked.emit($event)">
         <!-- [locale]="locale" [customTemplate]="headerTemplate" (eventDropped)="eventDropped({ dropData: $event }, $event.newStart, true)" (dragEnter)="dateDragEnter($event.date)" -->
       </calendar-week-view-header>
     </div>

@@ -1,0 +1,206 @@
+@charset "UTF-8";
+.cal-all-day-events .cal-time-events .cal-day-column .cal-hour + .cal-hour-odd {
+  background-color: theme("colors.primary");
+}
+.cal-all-day-events .cal-time-events .cal-time-label-column .cal-hour + .cal-hour-odd {
+  background-color: var(--primary);
+}
+.cal-all-day-events .cal-time-events .cal-time-label-column .cal-hour .cal-hour-odd {
+  display: none;
+}
+.cal-day-headers .cal-today {
+  background-color: red;
+  border-radius: 8px;
+}
+.cal-day-headers .cal-weekend {
+  background-color: theme("colors.borderline");
+  border-radius: theme("borderRadius.lg");
+}
+
+.cal-hour-segment::after {
+  content: " ";
+}
+.absolute {
+  position: absolute;
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.bg-gray-500 {
+  background-color: #6b7280;
+}
+
+.bg-gray-600 {
+  background-color: #4b5563;
+}
+
+.bg-gray-800 {
+  background-color: #1f2937;
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.border-1 {
+  border-width: 1px;
+}
+
+.border-l {
+  border-left-width: 1px;
+}
+
+.border-borderline {
+  border-color: var(--borderline);
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.h-2px {
+  height: 2px;
+}
+
+.h-24 {
+  height: 6rem;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.m-2 {
+  margin: 0.5rem;
+}
+
+.m-px {
+  margin: 1px;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.ml-24 {
+  margin-left: 6rem;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
+.pl-24 {
+  padding-left: 6rem;
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.text-dark {
+  color: var(--dark);
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.w-24 {
+  width: 6rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.z-10 {
+  z-index: 10;
+}
+
+/*# sourceMappingURL=ngx-calendar.css.map */

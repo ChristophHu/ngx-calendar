@@ -1,5 +1,316 @@
-.cal-today {
-    background-color: var(--accent);
+// day-view
+.cal-day-view {
+  calendar-week-view-header {
+    // @apply hidden
+  }
+}
+    
+.cal-all-day-events {
+  .cal-day-columns {
+    // @apply absolute flex h-full w-full top-0 border-l border-borderline
+
+    .cal-time-label-column {
+      // @apply flex h-full w-24 items-center justify-center
+    }
+    .cal-day-column {
+      // @apply flex grow border-l border-borderline
+    }
+  }
+
+  .cal-events-row {
+    // @apply relative ml-24
+
+    .cal-events-container {
+      // @apply relative
+    }
+  }
+
+  .cal-time-events {
+    // @apply relative flex
+
+    .cal-day-columns {
+      // @apply flex grow pl-24
+    }
+
+    .cal-day-column {
+      // @apply relative
+
+      .cal-hour + .cal-hour-odd {
+        background-color: theme('colors.primary');
+        // @apply bg-primary
+      }    
+    }
+
+    .cal-time-label-column {
+      // @apply flex flex-col h-full w-24 items-center justify-center font-bold
+      .cal-hour + .cal-hour-odd {
+        background-color: var(--primary)
+        // @apply bg-primary
+      }
+
+      .cal-hour {
+        .cal-hour-odd {
+          display: none
+          // @apply hidden
+        }
+      }
+    }
+
+    .cal-events-container {
+      // @apply relative
+    }
+      
+    .cal-day-column {
+      // @apply flex flex-col flex-grow
+    }
+  }  
+}
+
+// time-marker
+.cal-current-time-marker {
+  // @apply absolute h-2px w-full bg-accent z-10
+}
+    
+// week-view-event
+.cal-event {
+  // @apply flex m-px px-1 items-center border rounded
+
+  .cal-event-action {
+    // @apply ml-2
+  }
+
+  .cal-event-title {
+    // @apply ml-2 text-dark text-sm
+  }
+}
+// header
+.cal-day-headers {
+  // @apply flex ml-24 bg-primary text-dark rounded-lg
+
+  .cal-header {
+    // @apply flex flex-col w-full m-2 p-1 text-center text-ellipsis whitespace-nowrap overflow-hidden
+  }
+  .cal-past {
+    // @apply bg-gray-600 rounded
+  }
+
+  .cal-today {
+    background-color: red;
     border-radius: 8px;
     // @apply bg-accent rounded
+  }
+
+  .cal-future {
+    // @apply bg-gray-500 rounded
+  }
+
+  .cal-weekend {
+    background-color: theme('colors.borderline');
+    border-radius: theme('borderRadius.lg');
+    // @apply bg-gray-800 rounded
+  }
+}
+
+// week-view-hour-segment 
+.cal-hour-segment {
+  // @apply block relative
+
+  &::after {
+    content: '\00a0';
+  }
+
+  &:hover {
+    // @apply bg-secondary
+  }
+}
+
+.cal-starts-within-day .cal-event {
+  // @apply rounded-tl rounded-tr
+}
+
+.cal-ends-within-day .cal-event {
+  // @apply rounded-bl rounded-br
+}
+
+.absolute {
+  position: absolute;
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.bg-gray-500 {
+  background-color: #6b7280;
+}
+
+.bg-gray-600 {
+  background-color: #4b5563;
+}
+
+.bg-gray-800 {
+  background-color: #1f2937;
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.border-1 {
+  border-width: 1px;
+}
+
+.border-l {
+  border-left-width: 1px;
+}
+
+.border-borderline {
+  border-color: var(--borderline);
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.h-2px {
+  height: 2px;
+}
+
+.h-24 {
+  height: 6rem;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.m-2 {
+  margin: 0.5rem;
+}
+
+.m-px {
+  margin: 1px;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.ml-24 {
+  margin-left: 6rem;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
+.pl-24 {
+  padding-left: 6rem;
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.text-dark {
+  color: var(--dark);
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.w-24 {
+  width: 6rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.z-10 {
+  z-index: 10;
 }
