@@ -33,6 +33,9 @@
     }
 
     .cal-day-column {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
       // @apply relative
 
       .cal-hour + .cal-hour-odd {
@@ -73,6 +76,17 @@
     
 // week-view-event
 .cal-event {
+  position: relative;
+  display: flex;
+  flex: 1 1 0%;
+  margin: 1px;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  height: 100%;
+  width: 100%;
   // @apply flex m-px px-1 items-center border rounded
 
   .cal-event-action {
