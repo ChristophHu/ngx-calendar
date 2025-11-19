@@ -2,14 +2,15 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, 
 import { CommonModule } from '@angular/common';
 import { CalendarEvent, CalendarEventTimesChangedEvent, DayViewScheduler, GetWeekViewArgs, WeekView, WeekViewAllDayEvent, WeekViewAllDayEventResize, WeekViewAllDayEventRow, WeekViewHour, WeekViewHourColumn, WeekViewHourSegment, WeekViewTimeEvent } from '../../../models/models';
 import { Subject, Subscription } from 'rxjs';
-import { ResizeCursors, ResizeEvent } from '@christophhu/ngx-resizeable';
-import { DragMoveEvent, DropEvent } from '@christophhu/ngx-drag-n-drop';
+import { ResizeableDirective, ResizeCursors, ResizeEvent, ResizeHandleDirective } from '@christophhu/ngx-resizeable';
+import { DragDirective, DragMoveEvent, DropEvent } from '@christophhu/ngx-drag-n-drop';
 import { addDate, getDayObject, getHours, getWeekViewPeriod, isSameDay, startOfHour, validateEvents } from '../../../utils/myutils';
 import { DefaultLibConfiguration, LibConfigurationProvider, LibToConfigureConfiguration } from '../../../config/calendar-config';
 import { CalendarWeekViewHeaderComponent } from '../calendar-week-view-header/calendar-week-view-header.component';
 import { CalendarWeekViewHourSegmentComponent } from '../calendar-week-view-hour-segment/calendar-week-view-hour-segment.component';
 import { CalendarWeekViewCurrentTimeMarkerComponent } from '../calendar-week-view-current-time-marker/calendar-week-view-current-time-marker.component';
 import { CalendarWeekViewEventComponent } from '../calendar-week-view-event/calendar-week-view-event.component';
+import { NgxIconsComponent } from '@christophhu/ngx-icons';
 
 export interface CalendarWeekViewBeforeRenderEvent extends WeekView {
   header: WeekDay[];
@@ -32,7 +33,11 @@ export interface WeekDay {
     CalendarWeekViewEventComponent,
     CalendarWeekViewHeaderComponent,
     CalendarWeekViewHourSegmentComponent,
-    CommonModule
+    CommonModule,
+    // DragDirective,
+    NgxIconsComponent,
+    ResizeableDirective,
+    ResizeHandleDirective,
   ],
   templateUrl: './calendar-week-view.component.html',
   styleUrl: './calendar-week-view.component.sass'
@@ -79,7 +84,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   // dragAlreadyMoved = false
   // validateDrag: ValidateDrag
   // validateResize: (args: any) => boolean
-  // dayColumnWidth: number
+  dayColumnWidth: number = 0
   // calendarId = Symbol('angular calendar week view id')
   // lastDraggedEvent: CalendarEvent
   rtl = false
@@ -690,60 +695,60 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   //   return newEventDates;
   // }
 
-  // protected resizeStarted(
-  //   eventsContainer: HTMLElement,
-  //   event: WeekViewTimeEvent | WeekViewAllDayEvent,
-  //   dayWidth?: number
-  // ) {
-  //   this.dayColumnWidth = this.getDayColumnWidth(eventsContainer);
-  //   const resizeHelper = new CalendarResizeHelper(
-  //     eventsContainer,
-  //     dayWidth,
-  //     this.rtl
-  //   );
-  //   this.validateResize = ({ rectangle, edges }) => {
-  //     const isWithinBoundary = resizeHelper.validateResize({
-  //       rectangle: { ...rectangle },
-  //       edges,
-  //     });
+  protected resizeStarted(
+    eventsContainer: HTMLElement,
+    event: WeekViewTimeEvent | WeekViewAllDayEvent,
+    dayWidth?: number
+  ) {
+    this.dayColumnWidth = this.getDayColumnWidth(eventsContainer);
+    // const resizeHelper = new CalendarResizeHelper(
+    //   eventsContainer,
+    //   dayWidth,
+    //   this.rtl
+    // );
+    // this.validateResize = ({ rectangle, edges }) => {
+    //   const isWithinBoundary = resizeHelper.validateResize({
+    //     rectangle: { ...rectangle },
+    //     edges,
+    //   });
 
-  //     if (isWithinBoundary && this.validateEventTimesChanged) {
-  //       let newEventDates;
-  //       if (!dayWidth) {
-  //         newEventDates = this.getTimeEventResizedDates(event.event, {
-  //           rectangle,
-  //           edges,
-  //         });
-  //       } else {
-  //         const modifier = this.rtl ? -1 : 1;
-  //         if (typeof edges.left !== 'undefined') {
-  //           const diff = Math.round(+edges.left / dayWidth) * modifier;
-  //           newEventDates = this.getAllDayEventResizedDates(
-  //             event.event,
-  //             diff,
-  //             !this.rtl
-  //           );
-  //         } else {
-  //           const diff = Math.round(+edges.right / dayWidth) * modifier;
-  //           newEventDates = this.getAllDayEventResizedDates(
-  //             event.event,
-  //             diff,
-  //             this.rtl
-  //           );
-  //         }
-  //       }
-  //       return this.validateEventTimesChanged({
-  //         type: CalendarEventTimesChangedEventType.Resize,
-  //         event: event.event,
-  //         newStart: newEventDates.start,
-  //         newEnd: newEventDates.end,
-  //       });
-  //     }
+    //   if (isWithinBoundary && this.validateEventTimesChanged) {
+    //     let newEventDates;
+    //     if (!dayWidth) {
+    //       newEventDates = this.getTimeEventResizedDates(event.event, {
+    //         rectangle,
+    //         edges,
+    //       });
+    //     } else {
+    //       const modifier = this.rtl ? -1 : 1;
+    //       if (typeof edges.left !== 'undefined') {
+    //         const diff = Math.round(+edges.left / dayWidth) * modifier;
+    //         newEventDates = this.getAllDayEventResizedDates(
+    //           event.event,
+    //           diff,
+    //           !this.rtl
+    //         );
+    //       } else {
+    //         const diff = Math.round(+edges.right / dayWidth) * modifier;
+    //         newEventDates = this.getAllDayEventResizedDates(
+    //           event.event,
+    //           diff,
+    //           this.rtl
+    //         );
+    //       }
+    //     }
+    //     return this.validateEventTimesChanged({
+    //       type: CalendarEventTimesChangedEventType.Resize,
+    //       event: event.event,
+    //       newStart: newEventDates.start,
+    //       newEnd: newEventDates.end,
+    //     });
+    //   }
 
-  //     return isWithinBoundary;
-  //   };
-  //   this.cdr.markForCheck();
-  // }
+    //   return isWithinBoundary;
+    // };
+    this.cdr.markForCheck();
+  }
 
   // protected getAllDayEventResizedDates(
   //   event: CalendarEvent,

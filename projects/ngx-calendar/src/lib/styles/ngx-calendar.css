@@ -13,18 +13,11 @@
 .cal-all-day-events .cal-time-events .cal-time-label-column .cal-hour .cal-hour-odd {
   display: none;
 }
-.cal-event {
-  position: relative;
+.cal-all-day-events .cal-time-events .cal-events-container .cal-event-container .cal-event-resize-element {
+  display: none;
+}
+.cal-all-day-events .cal-time-events .cal-events-container .cal-event-container:hover .cal-event-resize-element {
   display: flex;
-  flex: 1 1 0%;
-  margin: 1px;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-  align-items: center;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.25rem;
-  height: 100%;
-  width: 100%;
 }
 .cal-day-headers .cal-today {
   background-color: red;
@@ -80,6 +73,10 @@
 
 .bottom-0 {
   bottom: 0;
+}
+
+.block {
+  display: block;
 }
 
 .flex {
@@ -143,6 +140,10 @@
 
 .m-px {
   margin: 1px;
+}
+
+.-mb-2 {
+  margin-bottom: -0.5rem;
 }
 
 .ml-2 {

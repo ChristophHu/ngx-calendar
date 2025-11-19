@@ -32,7 +32,7 @@ export const colors: any = {
   styleUrl: './app.sass'
 })
 export class App {
-  view: CalendarView = CalendarView.Week
+  view: CalendarView = CalendarView.Week;
 
   viewDate: Date = new Date()
   
@@ -52,7 +52,7 @@ export class App {
     },
     {
       title: 'An all day event',
-      color: colors.blue,
+      color: colors.red,
       start: new Date(),
       allDay: true,
     },
@@ -60,12 +60,13 @@ export class App {
       title: 'A non all day event',
       color: colors.blue,
       start: new Date(),
+      allDay: true
     },
     { 
       start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 8, 0),
       end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 13, 0),
       title: "An Event (Today)",
-      color: colors.red,
+      // color: colors.blue,
       actions: [],
       resizable: {
           beforeStart: true,

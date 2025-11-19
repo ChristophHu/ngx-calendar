@@ -1,3 +1,6 @@
-<!-- <div *ngIf="(marker$ | async) as marker">
-    <div class="cal-current-time-marker absolute h-2px w-full bg-accent z-10" *ngIf="marker.isVisible" [style.top.px]="marker.top"></div>
-</div> -->
+@if ((marker$ | async); as marker) {
+    @if (marker && marker.isVisible) {
+        <div class="cal-current-time-marker absolute h-2px w-full bg-accent z-10" [style.top.px]="marker.top"></div>
+    }
+}
+

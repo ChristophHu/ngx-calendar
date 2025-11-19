@@ -61,6 +61,21 @@
 
     .cal-events-container {
       // @apply relative
+
+      .cal-event-container {
+        // @apply absolute
+
+        .cal-event-resize-element {
+          display: none;
+
+          // @apply absolute h-full w-2 left-0 top-0 cursor-ew-resize
+        }
+       
+      }
+      .cal-event-container:hover .cal-event-resize-element {
+        display: flex;
+        // @apply block
+      }
     }
       
     .cal-day-column {
@@ -76,18 +91,7 @@
     
 // week-view-event
 .cal-event {
-  position: relative;
-  display: flex;
-  flex: 1 1 0%;
-  margin: 1px;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-  align-items: center;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.25rem;
-  height: 100%;
-  width: 100%;
-  // @apply flex m-px px-1 items-center border rounded
+  // flex: 1 1 0%;
 
   .cal-event-action {
     // @apply ml-2
@@ -190,6 +194,10 @@
   bottom: 0;
 }
 
+.block {
+  display: block;
+}
+
 .flex {
   display: flex;
 }
@@ -251,6 +259,10 @@
 
 .m-px {
   margin: 1px;
+}
+
+.-mb-2 {
+  margin-bottom: -0.5rem;
 }
 
 .ml-2 {
