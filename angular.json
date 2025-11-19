@@ -28,6 +28,7 @@
             ],
             "styles": [
               "projects/demo/src/styles.sass",
+              "projects/ngx-calendar/src/lib/styles/ngx-calendar.scss",
               "dist/ngx-calendar/src/lib/styles/ngx-calendar.css"
             ]
           },

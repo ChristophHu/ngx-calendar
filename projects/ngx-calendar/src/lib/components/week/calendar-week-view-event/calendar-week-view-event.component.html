@@ -1,6 +1,15 @@
-<div class="cal-event absolute top-[8px] right-[2px] bottom-2 left-[2px] flex items-center bg-secondary rounded" [ngStyle]="{ color: weekEvent.event.color?.secondaryText, backgroundColor: weekEvent.event.color?.primary, borderColor: weekEvent.event.color?.secondary }">
-  <!-- <p class="cal-event-actions">
-    <span class="cal-event-action ml-2">Action 1</span>
-  </p> -->
-  <p class="cal-event-title ml-2 text-dark text-sm">{{ weekEvent.event.title }}</p>
-</div>
+@switch (true) {
+  @case (weekEvent.event.allDay) {
+    <div class="cal-event relative mt-px p-1 flex items-center bg-secondary rounded" [ngStyle]="{ color: weekEvent.event.color?.secondaryText, backgroundColor: weekEvent.event.color?.primary, borderColor: weekEvent.event.color?.secondary }">
+      <p class="cal-event-title ml-2 text-dark text-sm" (click)="clicked()">{{ weekEvent.event.title }}</p>
+    </div>
+  }
+  @default {
+    <div class="cal-event absolute top-[8px] right-[2px] bottom-2 left-[2px] flex items-center bg-secondary rounded" [ngStyle]="{ color: weekEvent.event.color?.secondaryText, backgroundColor: weekEvent.event.color?.primary, borderColor: weekEvent.event.color?.secondary }">
+      <!-- <p class="cal-event-actions">
+        <span class="cal-event-action ml-2">Action 1</span>
+      </p> -->
+      <p class="cal-event-title ml-2 text-dark text-sm" (click)="clicked()">{{ weekEvent.event.title }}</p>
+    </div>
+  }
+}

@@ -19,9 +19,16 @@
 
   .cal-events-row {
     // @apply relative ml-24
+    // relative h-8 ml-24
 
     .cal-events-container {
       // @apply relative
+    }
+
+    .cal-event-container {
+      // @applyabsolute inline-block
+
+      .cal-event { }
     }
   }
 
@@ -113,8 +120,8 @@
   }
 
   .cal-today {
-    background-color: red;
-    border-radius: 8px;
+    background-color: var(--accent);
+    border-radius: var(--radius-lg);
     // @apply bg-accent rounded
   }
 
@@ -123,8 +130,8 @@
   }
 
   .cal-weekend {
-    background-color: theme('colors.borderline');
-    border-radius: theme('borderRadius.lg');
+    background-color: var(--secondary);
+    border-radius: var(--radius-lg);
     // @apply bg-gray-800 rounded
   }
 }
@@ -234,6 +241,10 @@
   flex-grow: 1;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 .inset-0 {
   top: 0;
   right: 0;
@@ -256,21 +267,20 @@
 .m-2 {
   margin: 0.5rem;
 }
-
 .m-px {
   margin: 1px;
 }
-
 .-mb-2 {
   margin-bottom: -0.5rem;
 }
-
 .ml-2 {
   margin-left: 0.5rem;
 }
-
 .ml-24 {
   margin-left: 6rem;
+}
+.mt-px {
+  margin-top: 1px;
 }
 
 .overflow-hidden {
@@ -304,6 +314,10 @@
 
 .rounded-lg {
   border-radius: 0.5rem;
+}
+
+.sticky {
+  position: sticky;
 }
 
 .text-dark {

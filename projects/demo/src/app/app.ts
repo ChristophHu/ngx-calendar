@@ -51,7 +51,7 @@ export class App {
       draggable: true
     },
     {
-      title: 'An all day event',
+      title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
       color: colors.red,
       start: new Date(),
       allDay: true,
@@ -66,7 +66,7 @@ export class App {
       start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 8, 0),
       end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 13, 0),
       title: "An Event (Today)",
-      // color: colors.blue,
+      color: colors.blue,
       actions: [],
       resizable: {
           beforeStart: true,

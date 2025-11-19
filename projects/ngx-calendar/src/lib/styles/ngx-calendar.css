@@ -20,12 +20,12 @@
   display: flex;
 }
 .cal-day-headers .cal-today {
-  background-color: red;
-  border-radius: 8px;
+  background-color: var(--accent);
+  border-radius: var(--radius-lg);
 }
 .cal-day-headers .cal-weekend {
-  background-color: theme("colors.borderline");
-  border-radius: theme("borderRadius.lg");
+  background-color: var(--secondary);
+  border-radius: var(--radius-lg);
 }
 
 .cal-hour-segment::after {
@@ -115,6 +115,10 @@
   flex-grow: 1;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 .inset-0 {
   top: 0;
   right: 0;
@@ -152,6 +156,10 @@
 
 .ml-24 {
   margin-left: 6rem;
+}
+
+.mt-px {
+  margin-top: 1px;
 }
 
 .overflow-hidden {
