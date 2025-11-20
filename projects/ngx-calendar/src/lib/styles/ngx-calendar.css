@@ -195,6 +195,10 @@
   border-radius: 0.5rem;
 }
 
+.sticky {
+  position: sticky;
+}
+
 .text-dark {
   color: var(--dark);
 }

@@ -100,9 +100,9 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   
   constructor(protected cdr: ChangeDetectorRef, protected element: ElementRef<HTMLElement>, public configurationProvider: LibConfigurationProvider, private defaultLibConfiguration: DefaultLibConfiguration) {
     this.config = Object.assign(defaultLibConfiguration.config, configurationProvider.config)
-    console.log('viewDate', this.viewDate)
-    console.log('events', this.events)
-    console.warn('view', this.view)
+    // console.log('viewDate', this.viewDate)
+    // console.log('events', this.events)
+    // console.warn('view', this.view)
   }
 
   ngAfterViewInit(): void {
@@ -150,6 +150,8 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   }
 
   timeEventResizing(timeEvent: WeekViewTimeEvent, resizeEvent: ResizeEvent) {
+    console.log('timeEvent', this.eventSnapSize, this.hourSegmentHeight)
+    console.log('timeEventResizing', resizeEvent)
     this.timeEventResizes.set(timeEvent.event, resizeEvent)
     const adjustedEvents = new Map<CalendarEvent, CalendarEvent>()
 
@@ -167,8 +169,10 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   }
 
   timeEventResizeEnded(timeEvent: WeekViewTimeEvent) {
+    console.log('timeEventResizeEnded', timeEvent)
     this.view = this.getWeekView(this.events);
     const lastResizeEvent = this.timeEventResizes.get(timeEvent.event);
+    console.log('lastResizeEvent', lastResizeEvent)
     if (lastResizeEvent) {
       this.timeEventResizes.delete(timeEvent.event);
       const newEventDates = this.getTimeEventResizedDates(timeEvent.event, lastResizeEvent);
@@ -599,18 +603,15 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
     calendarEvent: CalendarEvent,
     resizeEvent: ResizeEvent
   ) {
+    console.log('resizeEvent', resizeEvent)
     const newEventDates = {
       start: calendarEvent.start,
       end: this.dateAdapter.getDefaultEventEnd(
         calendarEvent.start,
         this.minimumEventHeight
-      ),
-      // end: getDefaultEventEnd(
-      //   this.dateAdapter,
-      //   calendarEvent,
-      //   this.minimumEventHeight
-      // ),
+      )
     };
+    console.log('newEventDates', newEventDates)
     const { end, ...eventWithoutEnd } = calendarEvent;
     const smallestResizes = {
       start: this.dateAdapter.addMinutes(
@@ -620,12 +621,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
       end: this.dateAdapter.getDefaultEventEnd(
         eventWithoutEnd.start,
         this.minimumEventHeight
-      ),
-      // end: getDefaultEventEnd(
-      //   this.dateAdapter,
-      //   eventWithoutEnd,
-      //   this.minimumEventHeight
-      // ),
+      )
     };
 
     const modifier = this.rtl ? -1 : 1;
@@ -637,12 +633,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
         daysDiff,
         this.excludeDays
       );
-      // const newStart = addDaysWithExclusions(
-      //   this.dateAdapter,
-      //   newEventDates.start,
-      //   daysDiff,
-      //   this.excludeDays
-      // );
       if (newStart < smallestResizes.start) {
         newEventDates.start = newStart;
       } else {
@@ -655,12 +645,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
         daysDiff,
         this.excludeDays
       );
-      // const newEnd = addDaysWithExclusions(
-      //   this.dateAdapter,
-      //   newEventDates.end,
-      //   daysDiff,
-      //   this.excludeDays
-      // );
       if (newEnd > smallestResizes.end) {
         newEventDates.end = newEnd;
       } else {
@@ -668,6 +652,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
       }
     }
 
+    console.log('resizeEvent.edges', resizeEvent.edges)
     if (typeof resizeEvent.edges.top !== 'undefined') {
       const minutesMoved = getMinutesMoved(
         resizeEvent.edges.top as number,
@@ -728,6 +713,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
             rectangle,
             edges,
           });
+          console.log('newEventDates 712', newEventDates)
         } else {
           const modifier = this.rtl ? -1 : 1;
           if (typeof edges.left !== 'undefined') {
@@ -767,24 +753,12 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
     let start: Date = event.start;
     let end: Date = event.end || event.start;
     if (beforeStart) {
-      // start = addDaysWithExclusions(
-      //   this.dateAdapter,
-      //   start,
-      //   daysDiff,
-      //   this.excludeDays
-      // );
       start = this.dateAdapter.addDaysWithExclusions(
         start,
         daysDiff,
         this.excludeDays
       );
     } else {
-      // end = addDaysWithExclusions(
-      //   this.dateAdapter,
-      //   end,
-      //   daysDiff,
-      //   this.excludeDays
-      // );
       end = this.dateAdapter.addDaysWithExclusions(
         end,
         daysDiff,
@@ -794,13 +768,4 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
 
     return { start, end };
   }
-
-  // trackByWeekDayHeaderDate = (index: number, day: WeekDay) => day.date
-  // trackByHourSegment = (index: number, segment: WeekViewHourSegment) => segment.date
-  // trackByHour = (index: number, hour: WeekViewHour) => hour.segments[0].date
-  // trackByWeekAllDayEvent = (index: number, weekEvent: WeekViewAllDayEvent) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event)
-  // trackByWeekTimeEvent = (index: number, weekEvent: WeekViewTimeEvent) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event)
-
-  // trackByHourColumn = (index: number, column: WeekViewHourColumn) => column.hours[0] ? column.hours[0].segments[0].date : column
-  // trackById = (index: number, row: WeekViewAllDayEventRow) => row.id
 }
