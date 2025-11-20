@@ -1,0 +1,1 @@
+export type CalendarEventTimesChangedEventType = 'dragStart' | 'dragEnd' | 'resizeStart' | 'resizeEnd';

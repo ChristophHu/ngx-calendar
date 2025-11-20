@@ -66,6 +66,7 @@ export interface WeekViewTimeEvent {
     left: number;
     startsBeforeDay: boolean;
     endsAfterDay: boolean;
+    tempEvent?: CalendarEvent;
 }
 export interface WeekViewHourSegment {
     isStart: boolean;

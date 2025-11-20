@@ -21,11 +21,10 @@ export class CalendarWeekViewEventComponent {
   }>()
 
   constructor() {
-    console.log('CalendarWeekViewEventComponent', this.weekEvent)
+    
   }
 
   clicked() {
-    console.log('clicked event', this.weekEvent)
-    // this.eventClicked.emit()
+    
   }
 }

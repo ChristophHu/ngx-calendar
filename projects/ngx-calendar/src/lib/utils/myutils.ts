@@ -461,3 +461,94 @@ export class ApiUtils {
         })
     }
 }
+
+export function isInsideLeftAndRight(
+  outer: ClientRect,
+  inner: ClientRect,
+): boolean {
+  return (
+    Math.floor(outer.left) <= Math.ceil(inner.left) &&
+    Math.floor(inner.left) <= Math.ceil(outer.right) &&
+    Math.floor(outer.left) <= Math.ceil(inner.right) &&
+    Math.floor(inner.right) <= Math.ceil(outer.right)
+  );
+}
+
+function isInsideTopAndBottom(outer: ClientRect, inner: ClientRect): boolean {
+  return (
+    Math.floor(outer.top) <= Math.ceil(inner.top) &&
+    Math.floor(inner.top) <= Math.ceil(outer.bottom) &&
+    Math.floor(outer.top) <= Math.ceil(inner.bottom) &&
+    Math.floor(inner.bottom) <= Math.ceil(outer.bottom)
+  );
+}
+
+export function isInside(outer: ClientRect, inner: ClientRect): boolean {
+  return (
+    isInsideLeftAndRight(outer, inner) && isInsideTopAndBottom(outer, inner)
+  );
+}
+
+export class DateAdapter {
+  addMinutes(date: Date, minutes: number): Date {
+    const newDate = new Date(date)
+    newDate.setMinutes(newDate.getMinutes() + minutes)
+    return newDate
+  }
+
+  addDays(date: Date, days: number): Date {
+    const newDate = new Date(date)
+    newDate.setDate(newDate.getDate() + days)
+    return newDate
+  }
+
+  // Example for skipping excluded days
+  addDaysWithExclusions(date: Date, days: number, excludeDays: number[]): Date {
+    let newDate = new Date(date)
+    let added = 0
+    while (added < Math.abs(days)) {
+      newDate.setDate(newDate.getDate() + Math.sign(days))
+      if (!excludeDays.includes(newDate.getDay())) {
+        added++
+      }
+    }
+    return newDate
+  }
+
+  getDefaultEventEnd(start: Date, defaultDurationMinutes: number): Date {
+    return this.addMinutes(start, defaultDurationMinutes)
+  }
+}
+
+export function roundToNearest(amount: number, precision: number) {
+  return Math.round(amount / precision) * precision;
+}
+
+const MINUTES_IN_HOUR = 60;
+
+function getPixelAmountInMinutes(
+  hourSegments: number,
+  hourSegmentHeight: number,
+  hourDuration?: number,
+) {
+  return (hourDuration || MINUTES_IN_HOUR) / (hourSegments * hourSegmentHeight);
+}
+
+export function getMinutesMoved(
+  movedY: number,
+  hourSegments: number,
+  hourSegmentHeight: number,
+  eventSnapSize: number,
+  hourDuration?: number,
+): number {
+  const draggedInPixelsSnapSize = roundToNearest(
+    movedY,
+    eventSnapSize || hourSegmentHeight,
+  );
+  const pixelAmountInMinutes = getPixelAmountInMinutes(
+    hourSegments,
+    hourSegmentHeight,
+    hourDuration,
+  );
+  return draggedInPixelsSnapSize * pixelAmountInMinutes;
+}

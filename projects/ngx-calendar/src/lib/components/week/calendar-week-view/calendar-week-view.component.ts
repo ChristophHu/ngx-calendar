@@ -1,16 +1,17 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CalendarEvent, CalendarEventTimesChangedEvent, DayViewScheduler, GetWeekViewArgs, WeekView, WeekViewAllDayEvent, WeekViewAllDayEventResize, WeekViewAllDayEventRow, WeekViewHour, WeekViewHourColumn, WeekViewHourSegment, WeekViewTimeEvent } from '../../../models/models';
+import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarEventTimesChangedEventType, DayViewScheduler, GetWeekViewArgs, WeekView, WeekViewAllDayEvent, WeekViewAllDayEventResize, WeekViewAllDayEventRow, WeekViewHour, WeekViewHourColumn, WeekViewHourSegment, WeekViewTimeEvent } from '../../../models/models';
 import { Subject, Subscription } from 'rxjs';
 import { ResizeableDirective, ResizeCursors, ResizeEvent, ResizeHandleDirective } from '@christophhu/ngx-resizeable';
 import { DragDirective, DragMoveEvent, DropEvent } from '@christophhu/ngx-drag-n-drop';
-import { addDate, getDayObject, getHours, getWeekViewPeriod, isSameDay, startOfHour, validateEvents } from '../../../utils/myutils';
+import { addDate, getDayObject, getHours, getWeekViewPeriod, isSameDay, startOfHour, validateEvents, DateAdapter, getMinutesMoved } from '../../../utils/myutils';
 import { DefaultLibConfiguration, LibConfigurationProvider, LibToConfigureConfiguration } from '../../../config/calendar-config';
 import { CalendarWeekViewHeaderComponent } from '../calendar-week-view-header/calendar-week-view-header.component';
 import { CalendarWeekViewHourSegmentComponent } from '../calendar-week-view-hour-segment/calendar-week-view-hour-segment.component';
 import { CalendarWeekViewCurrentTimeMarkerComponent } from '../calendar-week-view-current-time-marker/calendar-week-view-current-time-marker.component';
 import { CalendarWeekViewEventComponent } from '../calendar-week-view-event/calendar-week-view-event.component';
 import { NgxIconsComponent } from '@christophhu/ngx-icons';
+import { CalendarResizeHelper } from '../../../models/calendar-resize-helper';
 
 export interface CalendarWeekViewBeforeRenderEvent extends WeekView {
   header: WeekDay[];
@@ -75,7 +76,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   view!: WeekView
   refreshSubscription: Subscription = new Subscription()
   // allDayEventResizes: Map<WeekViewAllDayEvent, WeekViewAllDayEventResize> = new Map()
-  // timeEventResizes: Map<CalendarEvent, ResizeEvent> = new Map()
+  timeEventResizes: Map<CalendarEvent, ResizeEvent> = new Map()
   // eventDragEnterByType = {
   //   allDay: 0,
   //   time: 0,
@@ -83,8 +84,11 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   // dragActive = false
   // dragAlreadyMoved = false
   // validateDrag: ValidateDrag
-  // validateResize: (args: any) => boolean
+  validateResize: (args: any) => boolean = () => true
   dayColumnWidth: number = 0
+
+  dateAdapter: DateAdapter = new DateAdapter()
+
   // calendarId = Symbol('angular calendar week view id')
   // lastDraggedEvent: CalendarEvent
   rtl = false
@@ -140,42 +144,42 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
     }
   }
 
-  // timeEventResizeStarted(eventsContainer: HTMLElement, timeEvent: WeekViewTimeEvent, resizeEvent: ResizeEvent): void {
-  //   this.timeEventResizes.set(timeEvent.event, resizeEvent);
-  //   this.resizeStarted(eventsContainer, timeEvent);
-  // }
+  timeEventResizeStarted(eventsContainer: HTMLElement, timeEvent: WeekViewTimeEvent, resizeEvent: ResizeEvent): void {
+    this.timeEventResizes.set(timeEvent.event, resizeEvent);
+    this.resizeStarted(eventsContainer, timeEvent);
+  }
 
-  // timeEventResizing(timeEvent: WeekViewTimeEvent, resizeEvent: ResizeEvent) {
-  //   this.timeEventResizes.set(timeEvent.event, resizeEvent)
-  //   const adjustedEvents = new Map<CalendarEvent, CalendarEvent>()
+  timeEventResizing(timeEvent: WeekViewTimeEvent, resizeEvent: ResizeEvent) {
+    this.timeEventResizes.set(timeEvent.event, resizeEvent)
+    const adjustedEvents = new Map<CalendarEvent, CalendarEvent>()
 
-  //   const tempEvents = [...this.events]
+    const tempEvents = [...this.events]
 
-  //   this.timeEventResizes.forEach((lastResizeEvent, event) => {
-  //     const newEventDates = this.getTimeEventResizedDates(event, lastResizeEvent)
-  //     const adjustedEvent = { ...event, ...newEventDates }
-  //     adjustedEvents.set(adjustedEvent, event)
-  //     const eventIndex = tempEvents.indexOf(event)
-  //     tempEvents[eventIndex] = adjustedEvent
-  //   });
+    this.timeEventResizes.forEach((lastResizeEvent, event) => {
+      const newEventDates = this.getTimeEventResizedDates(event, lastResizeEvent)
+      const adjustedEvent = { ...event, newEventDates }
+      adjustedEvents.set(adjustedEvent, event)
+      const eventIndex = tempEvents.indexOf(event)
+      tempEvents[eventIndex] = adjustedEvent
+    });
 
-  //   this.restoreOriginalEvents(tempEvents, adjustedEvents, true)
-  // }
+    this.restoreOriginalEvents(tempEvents, adjustedEvents, true)
+  }
 
-  // timeEventResizeEnded(timeEvent: WeekViewTimeEvent) {
-  //   this.view = this.getWeekView(this.events);
-  //   const lastResizeEvent = this.timeEventResizes.get(timeEvent.event);
-  //   if (lastResizeEvent) {
-  //     this.timeEventResizes.delete(timeEvent.event);
-  //     const newEventDates = this.getTimeEventResizedDates(timeEvent.event, lastResizeEvent);
-  //     this.eventTimesChanged.emit({
-  //       newStart: newEventDates.start,
-  //       newEnd: newEventDates.end,
-  //       event: timeEvent.event,
-  //       type: CalendarEventTimesChangedEventType.Resize,
-  //     });
-  //   }
-  // }
+  timeEventResizeEnded(timeEvent: WeekViewTimeEvent) {
+    this.view = this.getWeekView(this.events);
+    const lastResizeEvent = this.timeEventResizes.get(timeEvent.event);
+    if (lastResizeEvent) {
+      this.timeEventResizes.delete(timeEvent.event);
+      const newEventDates = this.getTimeEventResizedDates(timeEvent.event, lastResizeEvent);
+      this.eventTimesChanged.emit({
+        newStart: newEventDates.start,
+        newEnd: newEventDates.end,
+        event: timeEvent.event,
+        type: CalendarEventTimesChangedEventType.Resize,
+      });
+    }
+  }
 
   // allDayEventResizeStarted(allDayEventsContainer: HTMLElement, allDayEvent: WeekViewAllDayEvent, resizeEvent: ResizeEvent): void {
   //   this.allDayEventResizes.set(allDayEvent, { originalOffset: allDayEvent.offset, originalSpan: allDayEvent.span,edge: typeof resizeEvent.edges.left !== 'undefined' ? 'left' : 'right' });
@@ -361,9 +365,9 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
 
   protected refreshBody(): void {
     this.view = this.getWeekView(this.events);
-    console.warn('events', this.events)
-    console.warn('view', this.view)
-    console.warn('allDayEvent', JSON.parse(JSON.stringify(this.view.allDayEventRows)))
+    // console.warn('events', this.events)
+    // console.warn('view', this.view)
+    // console.warn('allDayEvent', JSON.parse(JSON.stringify(this.view.allDayEventRows)))
   }
 
   protected refreshAll(): void {
@@ -382,7 +386,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   }
 
   getWeekView(events: CalendarEvent[]) {
-    console.log('viewDate', this.viewDate)
     return this.prepareWeekView({
       events,
       viewDate: this.viewDate,
@@ -414,9 +417,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   }
 
   prepareWeekView(args: GetWeekViewArgs): WeekView {
-    console.warn('args', args)
     const period = { start: args.viewStart ? args.viewStart : args.viewDate, end: args.viewEnd ? args.viewEnd : args.viewDate, events: args.events ? args.events : [] }
-    console.log('period', period)
     let hourColumns: WeekViewHourColumn[] = []
     let allDayEventRows: WeekViewAllDayEventRow[] = []
 
@@ -455,9 +456,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
 
       events?.forEach((event: CalendarEvent) => {
 
-        // if (event.start < period.end && (!event.end || event.end > period.start)) {
-        //   console.log('event filtered', event)
-        // }
         let top: number = 0
         let height: number = 0
 
@@ -465,7 +463,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
           case isSameDay(event.start, startOfView) && !event.end:
             
             top = getHours(startOfHour(event.start)) * this.hourSegments * this.hourSegmentHeight
-            console.log('top', top)
             break
           case isSameDay(event.start, startOfView) && event.end && isSameDay(event.end, startOfView):
             let startsBeforeDay: boolean = event.start < startOfView
@@ -484,8 +481,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
       hourColumns.push(hourColumn)
       startOfView = addDate(startOfView, 1)
     }
-
-    console.warn('hourColumns', hourColumns)
 
     // if (args.viewStart && args.viewEnd) {
     //   hourColumns = this.prepareDayViewHourColumns(period, args.dayStart, args.dayEnd)
@@ -544,156 +539,173 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   //   return { start, end };
   // }
 
-  // protected restoreOriginalEvents(
-  //   tempEvents: CalendarEvent[],
-  //   adjustedEvents: Map<CalendarEvent, CalendarEvent>,
-  //   snapDraggedEvents = true
-  // ) {
-  //   const previousView = this.view;
-  //   if (snapDraggedEvents) {
-  //     this.view = this.getWeekView(tempEvents);
-  //   }
+  protected restoreOriginalEvents(
+    tempEvents: CalendarEvent[],
+    adjustedEvents: Map<CalendarEvent, CalendarEvent>,
+    snapDraggedEvents = true
+  ) {
+    const previousView = this.view;
+    if (snapDraggedEvents) {
+      this.view = this.getWeekView(tempEvents);
+    }
 
-  //   const adjustedEventsArray = tempEvents.filter((event) =>
-  //     adjustedEvents.has(event)
-  //   );
-  //   this.view.hourColumns.forEach((column, columnIndex) => {
-  //     previousView.hourColumns[columnIndex].hours.forEach((hour, hourIndex) => {
-  //       hour.segments.forEach((segment, segmentIndex) => {
-  //         column.hours[hourIndex].segments[segmentIndex].cssClass =
-  //           segment.cssClass;
-  //       });
-  //     });
+    const adjustedEventsArray = tempEvents.filter((event) =>
+      adjustedEvents.has(event)
+    );
+    this.view.hourColumns.forEach((column, columnIndex) => {
+      previousView.hourColumns[columnIndex].hours.forEach((hour, hourIndex) => {
+        hour.segments.forEach((segment, segmentIndex) => {
+          column.hours[hourIndex].segments[segmentIndex].cssClass =
+            segment.cssClass;
+        });
+      });
 
-  //     adjustedEventsArray.forEach((adjustedEvent) => {
-  //       const originalEvent = adjustedEvents.get(adjustedEvent);
-  //       const existingColumnEvent = column.events.find(
-  //         (columnEvent) =>
-  //           columnEvent.event ===
-  //           (snapDraggedEvents ? adjustedEvent : originalEvent)
-  //       );
-  //       if (existingColumnEvent) {
-  //         // restore the original event so trackBy kicks in and the dom isn't changed
-  //         existingColumnEvent.event = originalEvent;
-  //         existingColumnEvent['tempEvent'] = adjustedEvent;
-  //         if (!snapDraggedEvents) {
-  //           existingColumnEvent.height = 0;
-  //           existingColumnEvent.width = 0;
-  //         }
-  //       } else {
-  //         // add a dummy event to the drop so if the event was removed from the original column the drag doesn't end early
-  //         const event = {
-  //           event: originalEvent,
-  //           left: 0,
-  //           top: 0,
-  //           height: 0,
-  //           width: 0,
-  //           startsBeforeDay: false,
-  //           endsAfterDay: false,
-  //           tempEvent: adjustedEvent,
-  //         };
-  //         column.events.push(event);
-  //       }
-  //     });
-  //   });
-  //   adjustedEvents.clear();
-  // }
+      adjustedEventsArray.forEach((adjustedEvent) => {
+        const originalEvent = adjustedEvents.get(adjustedEvent);
+        const existingColumnEvent = column.events.find(
+          (columnEvent) =>
+            columnEvent.event ===
+            (snapDraggedEvents ? adjustedEvent : originalEvent)
+        );
+        if (existingColumnEvent) {
+          // restore the original event so trackBy kicks in and the dom isn't changed
+          existingColumnEvent.event = originalEvent!;
 
-  // protected getTimeEventResizedDates(
-  //   calendarEvent: CalendarEvent,
-  //   resizeEvent: ResizeEvent
-  // ) {
-  //   const newEventDates = {
-  //     start: calendarEvent.start,
-  //     end: getDefaultEventEnd(
-  //       this.dateAdapter,
-  //       calendarEvent,
-  //       this.minimumEventHeight
-  //     ),
-  //   };
-  //   const { end, ...eventWithoutEnd } = calendarEvent;
-  //   const smallestResizes = {
-  //     start: this.dateAdapter.addMinutes(
-  //       newEventDates.end,
-  //       this.minimumEventHeight * -1
-  //     ),
-  //     end: getDefaultEventEnd(
-  //       this.dateAdapter,
-  //       eventWithoutEnd,
-  //       this.minimumEventHeight
-  //     ),
-  //   };
+          existingColumnEvent.tempEvent = adjustedEvent;
+          if (!snapDraggedEvents) {
+            existingColumnEvent.height = 0;
+            existingColumnEvent.width = 0;
+          }
+        } else {
+          // add a dummy event to the drop so if the event was removed from the original column the drag doesn't end early
+          const event = {
+            event: originalEvent!,
+            left: 0,
+            top: 0,
+            height: 0,
+            width: 0,
+            startsBeforeDay: false,
+            endsAfterDay: false,
+            tempEvent: adjustedEvent,
+          };
+          column.events.push(event);
+        }
+      });
+    });
+    adjustedEvents.clear();
+  }
 
-  //   const modifier = this.rtl ? -1 : 1;
+  protected getTimeEventResizedDates(
+    calendarEvent: CalendarEvent,
+    resizeEvent: ResizeEvent
+  ) {
+    const newEventDates = {
+      start: calendarEvent.start,
+      end: this.dateAdapter.getDefaultEventEnd(
+        calendarEvent.start,
+        this.minimumEventHeight
+      ),
+      // end: getDefaultEventEnd(
+      //   this.dateAdapter,
+      //   calendarEvent,
+      //   this.minimumEventHeight
+      // ),
+    };
+    const { end, ...eventWithoutEnd } = calendarEvent;
+    const smallestResizes = {
+      start: this.dateAdapter.addMinutes(
+        newEventDates.end,
+        this.minimumEventHeight * -1
+      ),
+      end: this.dateAdapter.getDefaultEventEnd(
+        eventWithoutEnd.start,
+        this.minimumEventHeight
+      ),
+      // end: getDefaultEventEnd(
+      //   this.dateAdapter,
+      //   eventWithoutEnd,
+      //   this.minimumEventHeight
+      // ),
+    };
 
-  //   if (typeof resizeEvent.edges.left !== 'undefined') {
-  //     const daysDiff =
-  //       Math.round(+resizeEvent.edges.left / this.dayColumnWidth) * modifier;
-  //     const newStart = addDaysWithExclusions(
-  //       this.dateAdapter,
-  //       newEventDates.start,
-  //       daysDiff,
-  //       this.excludeDays
-  //     );
-  //     if (newStart < smallestResizes.start) {
-  //       newEventDates.start = newStart;
-  //     } else {
-  //       newEventDates.start = smallestResizes.start;
-  //     }
-  //   } else if (typeof resizeEvent.edges.right !== 'undefined') {
-  //     const daysDiff =
-  //       Math.round(+resizeEvent.edges.right / this.dayColumnWidth) * modifier;
-  //     const newEnd = addDaysWithExclusions(
-  //       this.dateAdapter,
-  //       newEventDates.end,
-  //       daysDiff,
-  //       this.excludeDays
-  //     );
-  //     if (newEnd > smallestResizes.end) {
-  //       newEventDates.end = newEnd;
-  //     } else {
-  //       newEventDates.end = smallestResizes.end;
-  //     }
-  //   }
+    const modifier = this.rtl ? -1 : 1;
 
-  //   if (typeof resizeEvent.edges.top !== 'undefined') {
-  //     const minutesMoved = getMinutesMoved(
-  //       resizeEvent.edges.top as number,
-  //       this.hourSegments,
-  //       this.hourSegmentHeight,
-  //       this.eventSnapSize,
-  //       this.hourDuration
-  //     );
-  //     const newStart = this.dateAdapter.addMinutes(
-  //       newEventDates.start,
-  //       minutesMoved
-  //     );
-  //     if (newStart < smallestResizes.start) {
-  //       newEventDates.start = newStart;
-  //     } else {
-  //       newEventDates.start = smallestResizes.start;
-  //     }
-  //   } else if (typeof resizeEvent.edges.bottom !== 'undefined') {
-  //     const minutesMoved = getMinutesMoved(
-  //       resizeEvent.edges.bottom as number,
-  //       this.hourSegments,
-  //       this.hourSegmentHeight,
-  //       this.eventSnapSize,
-  //       this.hourDuration
-  //     );
-  //     const newEnd = this.dateAdapter.addMinutes(
-  //       newEventDates.end,
-  //       minutesMoved
-  //     );
-  //     if (newEnd > smallestResizes.end) {
-  //       newEventDates.end = newEnd;
-  //     } else {
-  //       newEventDates.end = smallestResizes.end;
-  //     }
-  //   }
+    if (typeof resizeEvent.edges.left !== 'undefined') {
+      const daysDiff = Math.round(+resizeEvent.edges.left / this.dayColumnWidth) * modifier;
+      const newStart = this.dateAdapter.addDaysWithExclusions(
+        newEventDates.start,
+        daysDiff,
+        this.excludeDays
+      );
+      // const newStart = addDaysWithExclusions(
+      //   this.dateAdapter,
+      //   newEventDates.start,
+      //   daysDiff,
+      //   this.excludeDays
+      // );
+      if (newStart < smallestResizes.start) {
+        newEventDates.start = newStart;
+      } else {
+        newEventDates.start = smallestResizes.start;
+      }
+    } else if (typeof resizeEvent.edges.right !== 'undefined') {
+      const daysDiff = Math.round(+resizeEvent.edges.right / this.dayColumnWidth) * modifier;
+      const newEnd = this.dateAdapter.addDaysWithExclusions(
+        newEventDates.end,
+        daysDiff,
+        this.excludeDays
+      );
+      // const newEnd = addDaysWithExclusions(
+      //   this.dateAdapter,
+      //   newEventDates.end,
+      //   daysDiff,
+      //   this.excludeDays
+      // );
+      if (newEnd > smallestResizes.end) {
+        newEventDates.end = newEnd;
+      } else {
+        newEventDates.end = smallestResizes.end;
+      }
+    }
 
-  //   return newEventDates;
-  // }
+    if (typeof resizeEvent.edges.top !== 'undefined') {
+      const minutesMoved = getMinutesMoved(
+        resizeEvent.edges.top as number,
+        this.hourSegments,
+        this.hourSegmentHeight,
+        this.eventSnapSize,
+        this.hourDuration
+      );
+      const newStart = this.dateAdapter.addMinutes(
+        newEventDates.start,
+        minutesMoved
+      );
+      if (newStart < smallestResizes.start) {
+        newEventDates.start = newStart;
+      } else {
+        newEventDates.start = smallestResizes.start;
+      }
+    } else if (typeof resizeEvent.edges.bottom !== 'undefined') {
+      const minutesMoved = getMinutesMoved(
+        resizeEvent.edges.bottom as number,
+        this.hourSegments,
+        this.hourSegmentHeight,
+        this.eventSnapSize,
+        this.hourDuration
+      );
+      const newEnd = this.dateAdapter.addMinutes(
+        newEventDates.end,
+        minutesMoved
+      );
+      if (newEnd > smallestResizes.end) {
+        newEventDates.end = newEnd;
+      } else {
+        newEventDates.end = smallestResizes.end;
+      }
+    }
+
+    return newEventDates;
+  }
 
   protected resizeStarted(
     eventsContainer: HTMLElement,
@@ -701,87 +713,94 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
     dayWidth?: number
   ) {
     this.dayColumnWidth = this.getDayColumnWidth(eventsContainer);
-    // const resizeHelper = new CalendarResizeHelper(
-    //   eventsContainer,
-    //   dayWidth,
-    //   this.rtl
-    // );
-    // this.validateResize = ({ rectangle, edges }) => {
-    //   const isWithinBoundary = resizeHelper.validateResize({
-    //     rectangle: { ...rectangle },
-    //     edges,
-    //   });
+    const resizeHelper = new CalendarResizeHelper(
+      eventsContainer,
+      dayWidth? dayWidth : this.dayColumnWidth,
+      this.rtl
+    );
+    this.validateResize = ({ rectangle, edges }) => {
+      const isWithinBoundary = resizeHelper.validateResize(rectangle, edges);
 
-    //   if (isWithinBoundary && this.validateEventTimesChanged) {
-    //     let newEventDates;
-    //     if (!dayWidth) {
-    //       newEventDates = this.getTimeEventResizedDates(event.event, {
-    //         rectangle,
-    //         edges,
-    //       });
-    //     } else {
-    //       const modifier = this.rtl ? -1 : 1;
-    //       if (typeof edges.left !== 'undefined') {
-    //         const diff = Math.round(+edges.left / dayWidth) * modifier;
-    //         newEventDates = this.getAllDayEventResizedDates(
-    //           event.event,
-    //           diff,
-    //           !this.rtl
-    //         );
-    //       } else {
-    //         const diff = Math.round(+edges.right / dayWidth) * modifier;
-    //         newEventDates = this.getAllDayEventResizedDates(
-    //           event.event,
-    //           diff,
-    //           this.rtl
-    //         );
-    //       }
-    //     }
-    //     return this.validateEventTimesChanged({
-    //       type: CalendarEventTimesChangedEventType.Resize,
-    //       event: event.event,
-    //       newStart: newEventDates.start,
-    //       newEnd: newEventDates.end,
-    //     });
-    //   }
+      if (isWithinBoundary && this.validateEventTimesChanged) {
+        let newEventDates;
+        if (!dayWidth) {
+          newEventDates = this.getTimeEventResizedDates(event.event, {
+            rectangle,
+            edges,
+          });
+        } else {
+          const modifier = this.rtl ? -1 : 1;
+          if (typeof edges.left !== 'undefined') {
+            const diff = Math.round(+edges.left / dayWidth) * modifier;
+            newEventDates = this.getAllDayEventResizedDates(
+              event.event,
+              diff,
+              !this.rtl
+            );
+          } else {
+            const diff = Math.round(+edges.right / dayWidth) * modifier;
+            newEventDates = this.getAllDayEventResizedDates(
+              event.event,
+              diff,
+              this.rtl
+            );
+          }
+        }
+        return this.validateEventTimesChanged({
+          type: CalendarEventTimesChangedEventType.Resize,
+          event: event.event,
+          newStart: newEventDates.start,
+          newEnd: newEventDates.end,
+        });
+      }
 
-    //   return isWithinBoundary;
-    // };
+      return isWithinBoundary;
+    };
     this.cdr.markForCheck();
   }
 
-  // protected getAllDayEventResizedDates(
-  //   event: CalendarEvent,
-  //   daysDiff: number,
-  //   beforeStart: boolean
-  // ) {
-  //   let start: Date = event.start;
-  //   let end: Date = event.end || event.start;
-  //   if (beforeStart) {
-  //     start = addDaysWithExclusions(
-  //       this.dateAdapter,
-  //       start,
-  //       daysDiff,
-  //       this.excludeDays
-  //     );
-  //   } else {
-  //     end = addDaysWithExclusions(
-  //       this.dateAdapter,
-  //       end,
-  //       daysDiff,
-  //       this.excludeDays
-  //     );
-  //   }
+  protected getAllDayEventResizedDates(
+    event: CalendarEvent,
+    daysDiff: number,
+    beforeStart: boolean
+  ) {
+    let start: Date = event.start;
+    let end: Date = event.end || event.start;
+    if (beforeStart) {
+      // start = addDaysWithExclusions(
+      //   this.dateAdapter,
+      //   start,
+      //   daysDiff,
+      //   this.excludeDays
+      // );
+      start = this.dateAdapter.addDaysWithExclusions(
+        start,
+        daysDiff,
+        this.excludeDays
+      );
+    } else {
+      // end = addDaysWithExclusions(
+      //   this.dateAdapter,
+      //   end,
+      //   daysDiff,
+      //   this.excludeDays
+      // );
+      end = this.dateAdapter.addDaysWithExclusions(
+        end,
+        daysDiff,
+        this.excludeDays
+      );
+    }
 
-  //   return { start, end };
-  // }
+    return { start, end };
+  }
 
-  trackByWeekDayHeaderDate = (index: number, day: WeekDay) => day.date
-  trackByHourSegment = (index: number, segment: WeekViewHourSegment) => segment.date
-  trackByHour = (index: number, hour: WeekViewHour) => hour.segments[0].date
-  trackByWeekAllDayEvent = (index: number, weekEvent: WeekViewAllDayEvent) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event)
-  trackByWeekTimeEvent = (index: number, weekEvent: WeekViewTimeEvent) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event)
+  // trackByWeekDayHeaderDate = (index: number, day: WeekDay) => day.date
+  // trackByHourSegment = (index: number, segment: WeekViewHourSegment) => segment.date
+  // trackByHour = (index: number, hour: WeekViewHour) => hour.segments[0].date
+  // trackByWeekAllDayEvent = (index: number, weekEvent: WeekViewAllDayEvent) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event)
+  // trackByWeekTimeEvent = (index: number, weekEvent: WeekViewTimeEvent) => (weekEvent.event.id ? weekEvent.event.id : weekEvent.event)
 
-  trackByHourColumn = (index: number, column: WeekViewHourColumn) => column.hours[0] ? column.hours[0].segments[0].date : column
-  trackById = (index: number, row: WeekViewAllDayEventRow) => row.id
+  // trackByHourColumn = (index: number, column: WeekViewHourColumn) => column.hours[0] ? column.hours[0].segments[0].date : column
+  // trackById = (index: number, row: WeekViewAllDayEventRow) => row.id
 }
