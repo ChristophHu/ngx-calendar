@@ -114,6 +114,39 @@
           }
         }
       }
+    },
+    "ngx-resizeable": {
+      "projectType": "library",
+      "root": "projects/ngx-resizeable",
+      "sourceRoot": "projects/ngx-resizeable/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "projects/ngx-resizeable/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-resizeable/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-resizeable/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/ngx-resizeable/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }
