@@ -29,18 +29,5 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
-  },
-  "lib": {
-    "entryFile": "src/public-api.ts",
-    "styleIncludePaths": [
-      "src/lib/styles"
-    ]
-  },
-  "assets": [
-    {
-      "glob": "**/*.css",
-      "input": "src/lib/styles",
-      "output": "styles"
-    }
-  ]
+  }
 }

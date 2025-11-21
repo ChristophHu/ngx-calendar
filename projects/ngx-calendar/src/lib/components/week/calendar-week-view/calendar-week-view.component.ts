@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, 
 import { CommonModule } from '@angular/common';
 import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarEventTimesChangedEventType, DayViewScheduler, GetWeekViewArgs, WeekView, WeekViewAllDayEvent, WeekViewAllDayEventResize, WeekViewAllDayEventRow, WeekViewHour, WeekViewHourColumn, WeekViewHourSegment, WeekViewTimeEvent } from '../../../models/models';
 import { Subject, Subscription } from 'rxjs';
-import { NgxResizeableDirective, ResizeCursors, ResizeEvent, ResizeHandleDirective } from '../../../../../../ngx-resizeable/src/public-api';
+import { ResizeableDirective, ResizeCursors, ResizeEvent, ResizeHandleDirective } from '@christophhu/ngx-resizeable';
 import { DragDirective, DragMoveEvent, DropEvent } from '@christophhu/ngx-drag-n-drop';
 import { addDate, getDayObject, getHours, getWeekViewPeriod, isSameDay, startOfHour, validateEvents, DateAdapter, getMinutesMoved } from '../../../utils/myutils';
 import { DefaultLibConfiguration, LibConfigurationProvider, LibToConfigureConfiguration } from '../../../config/calendar-config';
@@ -37,7 +37,7 @@ export interface WeekDay {
     CommonModule,
     // DragDirective,
     NgxIconsComponent,
-    NgxResizeableDirective,
+    ResizeableDirective,
     ResizeHandleDirective,
   ],
   templateUrl: './calendar-week-view.component.html',
@@ -169,10 +169,8 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   }
 
   timeEventResizeEnded(timeEvent: WeekViewTimeEvent) {
-    console.log('timeEventResizeEnded', timeEvent)
     this.view = this.getWeekView(this.events);
     const lastResizeEvent = this.timeEventResizes.get(timeEvent.event);
-    console.log('lastResizeEvent', lastResizeEvent)
     if (lastResizeEvent) {
       this.timeEventResizes.delete(timeEvent.event);
       const newEventDates = this.getTimeEventResizedDates(timeEvent.event, lastResizeEvent);
@@ -606,7 +604,11 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
     console.log('resizeEvent', resizeEvent)
     const newEventDates = {
       start: calendarEvent.start,
-      end: this.dateAdapter.getDefaultEventEnd(
+      // end: this.dateAdapter.getDefaultEventEnd(
+      //   calendarEvent.start,
+      //   this.minimumEventHeight
+      // )
+      end: calendarEvent.end ? calendarEvent.end : this.dateAdapter.getDefaultEventEnd(
         calendarEvent.start,
         this.minimumEventHeight
       )
@@ -652,7 +654,6 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
       }
     }
 
-    console.log('resizeEvent.edges', resizeEvent.edges)
     if (typeof resizeEvent.edges.top !== 'undefined') {
       const minutesMoved = getMinutesMoved(
         resizeEvent.edges.top as number,
@@ -689,6 +690,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
       }
     }
 
+    console.log('final newEventDates', newEventDates)
     return newEventDates;
   }
 

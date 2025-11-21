@@ -54,13 +54,13 @@
     .cal-time-label-column {
       // @apply flex flex-col h-full w-24 items-center justify-center font-bold
       .cal-hour + .cal-hour-odd {
-        background-color: var(--primary)
+        background-color: var(--secondary);
         // @apply bg-primary
       }
 
       .cal-hour {
         .cal-hour-odd {
-          display: none
+          display: none;
           // @apply hidden
         }
       }
