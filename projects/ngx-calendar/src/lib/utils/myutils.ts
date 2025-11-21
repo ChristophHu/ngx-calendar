@@ -550,5 +550,6 @@ export function getMinutesMoved(
     hourSegmentHeight,
     hourDuration,
   );
+  console.log('getMinutesMoved', movedY, draggedInPixelsSnapSize, pixelAmountInMinutes)
   return draggedInPixelsSnapSize * pixelAmountInMinutes;
 }

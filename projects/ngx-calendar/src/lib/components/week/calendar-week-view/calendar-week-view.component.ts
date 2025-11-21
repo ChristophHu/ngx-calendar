@@ -151,7 +151,7 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
 
   timeEventResizing(timeEvent: WeekViewTimeEvent, resizeEvent: ResizeEvent) {
     console.log('timeEvent', this.eventSnapSize, this.hourSegmentHeight)
-    console.log('timeEventResizing', resizeEvent)
+    // console.log('timeEventResizing', resizeEvent)
     this.timeEventResizes.set(timeEvent.event, resizeEvent)
     const adjustedEvents = new Map<CalendarEvent, CalendarEvent>()
 

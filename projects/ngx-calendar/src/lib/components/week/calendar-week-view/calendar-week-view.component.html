@@ -88,8 +88,8 @@
                       }
                     </div>
                   }
-                  
                 </div>
+                
                 @for (hour of column.hours; track $index; let odd = $odd) {
                   <div class="cal-hour" [class.cal-hour-odd]="odd">
                     @for (segment of hour.segments; track $index) {
