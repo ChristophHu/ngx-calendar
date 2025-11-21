@@ -90,14 +90,14 @@
                   }
                   
                 </div>
-                <!-- @for (hour of column.hours; track $index; let odd = $odd) {
+                @for (hour of column.hours; track $index; let odd = $odd) {
                   <div class="cal-hour" [class.cal-hour-odd]="odd">
                     @for (segment of hour.segments; track $index) {
-                      <calendar-week-view-hour-segment *ngFor=" let segment of hour.segments; trackBy: trackByHourSegment " [style.height.px]="hourSegmentHeight" [segment]="segment" [segmentHeight]="hourSegmentHeight" [daysInWeek]="daysInWeek" [isTimeLabel]="daysInWeek === 1"></calendar-week-view-hour-segment>
-                      (mwlClick)="hourSegmentClicked.emit({ date: segment.date, sourceEvent: $event })" [locale]="locale" [customTemplate]="hourSegmentTemplate" [clickListenerDisabled]=" hourSegmentClicked.observers.length === 0 " mwlDroppable [dragOverClass]=" !dragActive || !snapDraggedEvents ? 'cal-drag-over' : null " dragActiveClass="cal-drag-active" (drop)="eventDropped($event, segment.date, false)" (dragEnter)="dateDragEnter(segment.date)"
+                      <calendar-week-view-hour-segment [style.height.px]="hourSegmentHeight" [segment]="segment" [segmentHeight]="hourSegmentHeight" [daysInWeek]="daysInWeek" [isTimeLabel]="daysInWeek === 1"></calendar-week-view-hour-segment>
+                      <!-- (mwlClick)="hourSegmentClicked.emit({ date: segment.date, sourceEvent: $event })" [locale]="locale" [customTemplate]="hourSegmentTemplate" [clickListenerDisabled]=" hourSegmentClicked.observers.length === 0 " mwlDroppable [dragOverClass]=" !dragActive || !snapDraggedEvents ? 'cal-drag-over' : null " dragActiveClass="cal-drag-active" (drop)="eventDropped($event, segment.date, false)" (dragEnter)="dateDragEnter(segment.date)" -->
                     }
                   </div>
-                } -->
+                }
               </div>
             }
           </div>

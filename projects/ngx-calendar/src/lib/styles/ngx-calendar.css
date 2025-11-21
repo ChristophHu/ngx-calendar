@@ -11,7 +11,7 @@
   background-color: var(--secondary);
 }
 .cal-all-day-events .cal-time-events .cal-time-label-column .cal-hour .cal-hour-odd {
-  background-color: var(--secondary);
+  display: none;
 }
 .cal-all-day-events .cal-time-events .cal-events-container .cal-event-container .cal-event-resize-element {
   display: none;
