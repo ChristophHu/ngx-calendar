@@ -35,7 +35,7 @@ export interface WeekDay {
     CalendarWeekViewHeaderComponent,
     CalendarWeekViewHourSegmentComponent,
     CommonModule,
-    // DragDirective,
+    DragDirective,
     NgxIconsComponent,
     ResizeableDirective,
     ResizeHandleDirective,
@@ -54,15 +54,15 @@ export class CalendarWeekViewComponent implements OnChanges, OnInit, OnDestroy, 
   @Input() precision: 'days' | 'minutes' = 'days'
   @Input() weekendDays: number[] = [0, 6]
   @Input() snapDraggedEvents: boolean = true
-  @Input() hourSegments: number = 2
+  @Input() hourSegments: number = 4
   @Input() hourDuration: number = 60
-  @Input() hourSegmentHeight: number = 30
+  @Input() hourSegmentHeight: number = 15
   @Input() minimumEventHeight: number = 30
   @Input() dayStartHour: number = 0
   @Input() dayStartMinute: number = 0
   @Input() dayEndHour: number = 23
   @Input() dayEndMinute: number = 59
-  @Input() eventSnapSize: number = 30
+  @Input() eventSnapSize: number = 15
   @Input() daysInWeek: number = 7
 
   @Input() validateEventTimesChanged!: (event: CalendarEventTimesChangedEvent) => boolean

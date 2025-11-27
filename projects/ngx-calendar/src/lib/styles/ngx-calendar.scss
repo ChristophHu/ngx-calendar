@@ -77,6 +77,23 @@
 
           // @apply absolute h-full w-2 left-0 top-0 cursor-ew-resize
         }
+
+        :not(.cal-draggable) {
+          cursor: pointer;
+        }
+
+        .cal-draggable {
+          cursor: move;
+        }
+
+        .cal-drag-active {
+          pointer-events: none;
+          z-index: 1;
+
+          & * {
+            pointer-events: none;
+          }
+        }
        
       }
       .cal-event-container:hover .cal-event-resize-element {
